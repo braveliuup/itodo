@@ -1,0 +1,47 @@
+<html>
+    <meta charset="utf-8">
+<body>
+
+<div>
+    <div class="up3">
+        css实现边上带小三角的提示框
+    </div>
+    <span><em></em></span>
+</div>
+
+
+<style> 
+    
+    .up3{
+        width: 400px;
+        height: 100px;
+        background: red;
+        border: 1px solid #333;
+        word-wrap: break-word;
+    }
+
+    span{
+        display: block;
+        width: 0px;
+        height: 0px;
+        border-width: 10px 10px ;
+        position: absolute;
+        border-style: solid;
+        left: 195px;
+        border-color: #333 transparent transparent;
+    }
+      em{
+        display: block;
+        width: 0px;
+        height: 0px;
+        border-width: 10px 10px ;
+        position: absolute;
+        border-style: solid;
+        top:-11px;
+        left: -10px;
+        border-color: red transparent transparent;
+    }
+</style>
+</body>
+
+</html>

@@ -1,0 +1,7 @@
+# 开启 rewrite 功能
+Options +FollowSymlinks
+RewriteEngine on
+
+# 重写规则
+RewriteRule ^todos$ todo/RestController.php?id=all [nc,qsa]
+RewriteRule ^todos/(\d+)$ todo/RestController.php?id=$1 [nc,qsa]

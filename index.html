@@ -14,20 +14,22 @@
             url('font/webfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
             url('font/webfont.svg#NotoSansHans-DemiLight') format('svg'); /* iOS 4.1- */
         }
-        body {
+        html,body {
            margin: 0;
            width: 100%;
            height: 100%;     
            font-family:"webfont" ;
+           text-align: center;
         }
         .todo-add {
-            background-size: 64px 64px;
-            width: 64px;
-            height: 64px;
+            background-size: 60px 60px;
+            width: 60px;
+            height: 60px;
             background-image: url("add.svg");
         }
         .footer{
             border-top: 1px solid #fafafa;
+            box-shadow: 0 0 10px slategrey;
             background-color: #fafafa;
             position: fixed;
             width: 100%;
@@ -62,17 +64,125 @@
             height: 32px;
             background-image: url("done.svg");
            display: inline;
+           position: absolute;
+           right: 10px;
+        }
+
+        .content-edit-container{
+            z-index: 999;
+            position: fixed;
+            width: 100%;
+            bottom: 74px;
+            text-align: center;
+           
+        }
+
+        .content-edit-div{
+            border: 0px solid #cccccc;
+            margin: 0 auto;
+            width: 0px;
+            height: 0px;
+            background-color: #fafafa;
+            border-radius:0px;
+            box-shadow: 0 0 2px slategrey;
+            opacity: 1;
+            overflow: hidden;
+            -webkit-transition: all .2s ease;
+            -moz-transition:  all .2s ease;
+            transition:  all .2s ease;
+        }
+        .content-edit-div.show{
+            width: 90%;
+            height: 150px;
+        }
+
+        .content-edit-div button {
+            margin-top: 13px;
+            margin-bottom: 40px;
+            height: 30px;
+        }
+
+        .content-edit-div input {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            width: 70%;
+            height: 30px;
+        }
+        .triangle{
+            margin: 0px;
+            border-width: 10px;
+            border-style: solid;
+            border-color: #cccccc transparent transparent;
+            padding: 0px; 
+            width: 0px;
+            height: 0px;
+            left: 50%;
+            margin-left: -10px;
+            position: absolute;
+        }
+        .triangle_inner{
+            margin: 0px;
+            border-width: 10px;
+            border-style: solid;
+            border-color: #fafafa transparent transparent;
+            padding: 0px; 
+            width: 0px;
+            height: 0px;
+            left: -10px;
+            top:-12px;
+            position: absolute;
         }
     </style>
 </head>    
 <body>
     <div class="content">
-        <div class="todo notdone">我谈感情，谈感情伤钱。<div class="todo-done"></div></div>
+        <div class="todo notdone">
+            <div>我谈感情，谈感情伤钱。</div>
+            <div class="todo-done" data-id="sd"></div>
+        </div>
         <div class="todo done">我谈感情，谈感情伤钱。</div>
-       
     </div>
     <div class="footer">
         <div id="todo-add" class="todo-add"></div>
     </div>
+    <div id="content-edit-container" class="content-edit-container">
+        <div id="content-edit-div" class="content-edit-div">
+            <div>
+                <input type="text" >
+            </div>
+            <div>
+                <button>sdlfkj</button>
+            </div>
+            <div class="triangle"><div class="triangle_inner"></div></div>
+        </div>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+    <script src="RestService.js"></script>
+    <script>
+        $(function(){
+             $('.todo-done').on('click', clickTodoDone);
+             $('.todo-add').on('click', clickTodoAdd);
+             function clickTodoAdd(e){
+                 if($(".content-edit-div").hasClass('show')){
+                     $(".content-edit-div").removeClass('show');
+                 }else{
+                     $(".content-edit-div").addClass('show');
+                 } 
+             }
+
+             function clickTodoDone(e){
+                 var id = e.target.getAttribute('data-id');
+                 
+             }
+             var restUrl = "http://ikexin.wang/todos";
+             var rest = new RestService(restUrl);
+            //  rest.findAll(function(data){
+            //      console.log(data);
+            //  });
+            //  rest.post(todo_model, function(data){
+            //      console.log(data);
+            //  })
+        });
+    </script>
 </body>
 </html>
