@@ -5,10 +5,8 @@ function RestService(newurl) {
       $.ajax({
           type: 'POST',
           url: this.myurl,
-          data: JSON.stringify(model), // '{"name":"' + model.name + '"}',
-          dataType: 'text',
-          processData: false,
-          contentType: 'application/json',
+          data: model, // '{"name":"' + model.name + '"}',
+          dataType: 'json',
           success: callback,
           error: function(req, status, ex) {},
           timeout:60000
@@ -19,10 +17,20 @@ function RestService(newurl) {
       $.ajax({
           type: 'PUT',
           url: this.myurl,
-          data: JSON.stringify(model), // '{"name":"' + model.name + '"}',
-          dataType: 'text',
-          processData: false,
-          contentType: 'application/json',
+          data: model, // '{"name":"' + model.name + '"}',
+          dataType: 'json',
+          success: callback,
+          error: function(req, status, ex) {},
+          timeout:60000
+      });
+  };
+
+   this.patch= function(model, callback) {
+      $.ajax({
+          type: 'POST',
+          url: this.myurl,
+          data: model, // '{"name":"' + model.name + '"}',
+          dataType: 'json',
           success: callback,
           error: function(req, status, ex) {},
           timeout:60000
@@ -41,8 +49,6 @@ function RestService(newurl) {
   };
  
   this.findAll = function(callback) {
-      //alert('sfindall');
-      //alert('myurl' + this.myurl);
     
       $.ajax({
           type: 'GET',
@@ -58,7 +64,7 @@ function RestService(newurl) {
       $.ajax({
           type: 'DELETE',
           url: this.myurl + '/' + id,
-          contentType: 'application/json',
+        //   contentType: 'application/json',
           success: callback,
           error: function(req, status, ex) {},
           timeout:60000

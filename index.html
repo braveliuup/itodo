@@ -6,6 +6,9 @@
     <meta name="format-detection" content="telephone=no">
     <meta http-equiv=”X-UA-Compatible” content=”IE=edge,chrome=1″/>
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <link href="favicon.ico" mce_href="favicon.ico" rel="bookmark" type="image/x-icon" /> 
+    <link href="favicon.ico" mce_href="favicon.ico" rel="icon" type="image/x-icon" /> 
+    <link href="favicon.ico" mce_href="favicon.ico" rel="shortcut icon" type="image/x-icon" /> 
     <style>
         @font-face {font-family: 'webfont';
             src: url('font/webfont.eot'); /* IE9*/
@@ -50,15 +53,29 @@
             align-items: center;
             -webkit-justify-content: center;
             justify-content: center;
+            border-bottom:1px solid rgba(34, 34, 34, 0.3)
         }
-        .todo.done{
+        .todo i{
+            font-size: 0.5em;
+        }
+        .todo.status1{
             background-color: #8bc34a;
+            position: relative;
         }
-        .todo.notdone{
+        .todo.status0{
             background-color: #f36c60;
             position: relative;
         }
-        .todo-done{
+        .todo.status1 .icon{
+            background-size: 32px 32px;
+            width: 32px;
+            height: 32px;
+            background-image: url("removedone.svg");
+           display: inline;
+           position: absolute;
+           right: 10px;
+        }
+        .todo.status0 .icon{
             background-size: 32px 32px;
             width: 32px;
             height: 32px;
@@ -98,8 +115,8 @@
 
         .content-edit-div button {
             margin-top: 13px;
-            margin-bottom: 40px;
-            height: 30px;
+            margin-bottom: 20px;
+            height: 40px;
         }
 
         .content-edit-div input {
@@ -132,15 +149,23 @@
             top:-12px;
             position: absolute;
         }
+
+        .mask{
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            margin: 0px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            display: none;
+        }
     </style>
+    <link rel="stylesheet" href="css/buttons.css">
+    
 </head>    
 <body>
     <div class="content">
-        <div class="todo notdone">
-            <div>我谈感情，谈感情伤钱。</div>
-            <div class="todo-done" data-id="sd"></div>
-        </div>
-        <div class="todo done">我谈感情，谈感情伤钱。</div>
     </div>
     <div class="footer">
         <div id="todo-add" class="todo-add"></div>
@@ -148,20 +173,21 @@
     <div id="content-edit-container" class="content-edit-container">
         <div id="content-edit-div" class="content-edit-div">
             <div>
-                <input type="text" >
+                <input id="taskContentTxt" type="text" >
             </div>
             <div>
-                <button>sdlfkj</button>
+                <button id="taskAddBtn" class="button button-pill button-primary">增加</button>
             </div>
             <div class="triangle"><div class="triangle_inner"></div></div>
         </div>
     </div>
+    <div class="mask"></div>
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
     <script src="RestService.js"></script>
     <script>
         $(function(){
-             $('.todo-done').on('click', clickTodoDone);
              $('.todo-add').on('click', clickTodoAdd);
+             $("#taskAddBtn").on('click', addTask);
              function clickTodoAdd(e){
                  if($(".content-edit-div").hasClass('show')){
                      $(".content-edit-div").removeClass('show');
@@ -170,18 +196,51 @@
                  } 
              }
 
-             function clickTodoDone(e){
-                 var id = e.target.getAttribute('data-id');
-                 
+             function todoOperate(e){
+               //  $('.mask').css('display', 'block') ;
+                 var uid = e.target.getAttribute('data-id');
+                 var status = e.target.getAttribute('data-status');
+                 rest.patch({id: uid, status: status === "0" ? 1 : 0}, function(data){
+                   // $('.mask').css('display', 'none');
+                     if(data.error) 
+                     {
+                         alert('update data error');
+                     }else{
+                        findAllTask();
+                     }
+                 });
+             }
+
+             function addTask(){
+                 $('#taskAddBtn').addClass('disabled');
+                 var task = $('#taskContentTxt').val().trim();
+                 if(task === ""){
+                     return;
+                 }
+                 rest.post({content: task}, function(data){
+                    $('#taskAddBtn').removeClass('disabled');
+                    $(".content-edit-div").removeClass('show');
+                    findAllTask();
+                 });
              }
              var restUrl = "http://ikexin.wang/todos";
              var rest = new RestService(restUrl);
-            //  rest.findAll(function(data){
-            //      console.log(data);
-            //  });
-            //  rest.post(todo_model, function(data){
-            //      console.log(data);
-            //  })
+             function findAllTask(){
+                rest.findAll(function(data){
+                    var htmlBuilder = [];
+                    if(data.error)
+                        return;
+                    data.forEach(function(item){
+                        htmlBuilder.push('<div class="todo status'+item.done_status+'">'+
+                                '<div><i>'+item.create_time+'</i>&nbsp; '+item.content+'</div>'+
+                                '<div disabled class="icon" data-status="'+item.done_status+'" data-id="'+item.uid+'"></div>'+
+                            '</div>');
+                    });
+                    $('.content').html(htmlBuilder.join(''));
+                    $('.todo .icon').one('click', todoOperate)
+                });
+             }
+             findAllTask();
         });
     </script>
 </body>

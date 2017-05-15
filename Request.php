@@ -7,12 +7,6 @@ class Request
     // 允许的请求方式
     private static $method_type = array('get', 'post', 'put', 'patch', 'delete');
 
-    //测试数据
-    private static $test_class = array(
-        1 => array('name' => '托福班', 'count' => 18),
-        2 => array('name' => '雅思班', 'count' => 20),
-    );
-
     public static function getRequest()
     {
         //请求方式
@@ -20,7 +14,7 @@ class Request
         if(in_array($method, self::$method_type)){
             // 调用请求方式对应的方法
             $data_name = $method.'Data';
-            return self::$data_name($_REQUEST);
+            return self::$data_name($_POST);
         }
         return false;
     }
@@ -32,7 +26,7 @@ class Request
         include("TodoModel.php");
         $todo = new Todo();
         if($id > 0){
-            return self::$test_class[$id];
+            return $id;
         }else{
             return $todo->getData(); 
         }
@@ -41,12 +35,23 @@ class Request
     // patch 更新部分信息
     private static function patchData($request_data)
     {
-
+        return $request_data;
+        // include("TodoModel.php");
+        // $todo = new Todo();
+        // return $todo->patchData($request_data);
     }
 
     // POST 新增数据
     private static function postData($request_data)
     {
-        var_dump($request_data);
+
+        include("TodoModel.php");
+        $todo = new Todo();
+        $id = (int)$request_data['id'];
+        if($id > 0){
+            return $todo->patchData($request_data);
+        }else{
+            return $todo->postData($request_data);
+        }
     }
 }
