@@ -124,6 +124,7 @@
             margin-bottom: 20px;
             width: 70%;
             height: 30px;
+            font-size: 1em;
         }
         .triangle{
             margin: 0px;
@@ -218,6 +219,7 @@
                      return;
                  }
                  rest.post({content: task}, function(data){
+                    $('#taskContentTxt').val("");
                     $('#taskAddBtn').removeClass('disabled');
                     $(".content-edit-div").removeClass('show');
                     findAllTask();
